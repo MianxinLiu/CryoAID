@@ -1,0 +1,70 @@
+Bottleneck @ file:///work/ci_py311/bottleneck_1676827011612/work
+Brotli @ file:///croot/brotli-split_1714483155106/work
+certifi==2023.7.22
+cffi @ file:///work/ci_py311/cffi_1676822533496/work
+charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
+cmake==3.27.4.1
+contourpy==1.2.1
+cycler==0.12.1
+einops==0.7.0
+filelock @ file:///work/ci_py311/filelock_1676823024085/work
+fonttools==4.50.0
+fsspec==2023.9.0
+future==0.18.3
+gmpy2 @ file:///work/ci_py311/gmpy2_1676839849213/work
+h5py==3.9.0
+huggingface-hub==0.16.4
+idna==3.4
+Jinja2 @ file:///work/ci_py311/jinja2_1676823587943/work
+joblib==1.3.2
+kiwisolver==1.4.5
+lit==16.0.6
+MarkupSafe @ file:///work/ci_py311/markupsafe_1676823507015/work
+matplotlib==3.8.3
+mkl-fft==1.3.6
+mkl-random @ file:///work/mkl/mkl_random_1682950433854/work
+mkl-service==2.4.0
+mpmath @ file:///croot/mpmath_1690848262763/work
+networkx @ file:///croot/networkx_1690561992265/work
+numexpr @ file:///croot/numexpr_1683221822650/work
+numpy @ file:///croot/numpy_and_numpy_base_1691091611330/work
+nvidia-cublas-cu11==11.10.3.66
+nvidia-cuda-cupti-cu11==11.7.101
+nvidia-cuda-nvrtc-cu11==11.7.99
+nvidia-cuda-runtime-cu11==11.7.99
+nvidia-cudnn-cu11==8.5.0.96
+nvidia-cufft-cu11==10.9.0.58
+nvidia-curand-cu11==10.2.10.91
+nvidia-cusolver-cu11==11.4.0.1
+nvidia-cusparse-cu11==11.7.4.91
+nvidia-nccl-cu11==2.14.3
+nvidia-nvtx-cu11==11.7.91
+opencv-python==4.8.0.76
+openslide-python @ file:///home/conda/feedstock_root/build_artifacts/openslide-python_1690017711875/work
+packaging==23.1
+pandas @ file:///croot/pandas_1692289311655/work
+Pillow @ file:///home/conda/feedstock_root/build_artifacts/pillow_1688255851102/work
+protobuf==4.24.4
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+pyparsing==3.1.2
+PySocks @ file:///work/ci_py311/pysocks_1676822712504/work
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+pytz @ file:///work/ci_py311/pytz_1676825004346/work
+PyYAML @ file:///croot/pyyaml_1698096049011/work
+requests @ file:///croot/requests_1716902831423/work
+safetensors==0.3.3
+scikit-learn==1.3.1
+scipy==1.11.3
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sympy @ file:///work/ci_py311_2/sympy_1679339311852/work
+tensorboardX==2.6.2.2
+threadpoolctl==3.2.0
+timm==0.9.7
+torch==2.2.2
+torchaudio==2.0.2
+torchvision==0.15.2
+tqdm==4.66.1
+triton==2.2.0
+typing_extensions @ file:///croot/typing_extensions_1690297465030/work
+tzdata @ file:///croot/python-tzdata_1690578112552/work
+urllib3 @ file:///croot/urllib3_1715635851070/work
