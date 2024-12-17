@@ -5,7 +5,7 @@ The codes for CryoAIMD
 - Linux or macOS
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
-- The model for AI-FFPE is available at https://github.com/DeepMIALab/AI-FFPE (Brain/FrozGanModels/wAtt_wLoss/Case-II). 
+- The model for AI-FFPE is available at https://github.com/DeepMIALab/AI-FFPE (Brain/FrozGanModels/wAtt_wLoss/Case-I). 
 - Pathoduet model is available at https://github.com/openmedlab/PathoDuet (checkpoint p2).
 - Other settings are refer to CLAM at https://github.com/mahmoodlab/CLAM (such as the ResNet).
 
