@@ -1,5 +1,5 @@
-# CryoAIMD
-The codes for CryoAIMD
+# CryoAID
+The codes for CryoAID
 
 ## Prerequisites
 - Linux or macOS
@@ -12,8 +12,8 @@ The codes for CryoAIMD
 ### Install
 - Clone this repo:
 ```bash
-git clone https://github.com/MianxinLiu/CryoAIMD
-cd CryoAIMD
+git clone https://github.com/MianxinLiu/CryoAID
+cd CryoAID
 ```
 
 - For pip users, please type the command `pip install -r requirements.txt`.
