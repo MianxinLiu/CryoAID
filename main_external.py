@@ -40,14 +40,14 @@ def main(args):
     all_test_acc = []
     all_val_acc = []
 
-    goal=[0.59]
+    goal=[0.60]
     folds = np.arange(start, end)
     for i in folds:
         patient=0
         qualify=False
         best_test_auc=goal[i]
 
-        while not qualify and patient<50:
+        while not qualify and patient<20:
             print('loop : ', patient)
             #seed_torch(args.seed)
             train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=False, 
@@ -60,7 +60,7 @@ def main(args):
             results, test_auc, val_auc, test_acc, val_acc  = train(datasets, i, args)
             patient = patient + 1
             
-            if test_auc>best_test_auc or patient==49:
+            if test_auc>best_test_auc or patient==19:
                 print('qualified or out of patient')
                 print('test_auc: ', test_auc)
                 qualify=True
@@ -90,13 +90,15 @@ def main(args):
 parser = argparse.ArgumentParser(description='Configurations for WSI Training')
 parser.add_argument('--data_root_dir', type=str, default=None, 
                     help='data directory')
-parser.add_argument('--max_epochs', type=int, default=80,
+parser.add_argument('--enco_dim', type=int, default=768,
+                    help='encoding dimension (default: enco_dim=768)') 
+parser.add_argument('--max_epochs', type=int, default=50,
                     help='maximum number of epochs to train (default: 200)')
 parser.add_argument('--lr', type=float, default=1e-4,
                     help='learning rate (default: 0.0001)')
 parser.add_argument('--label_frac', type=float, default=1.0,
                     help='fraction of training labels (default: 1.0)')
-parser.add_argument('--reg', type=float, default=5e-3,
+parser.add_argument('--reg', type=float, default=1e-3,
                     help='weight decay (default: 1e-3)')
 parser.add_argument('--seed', type=int, default=1, 
                     help='random seed for reproducible experiment (default: 1)')
@@ -114,12 +116,13 @@ parser.add_argument('--opt', type=str, choices = ['adam', 'sgd'], default='adam'
 parser.add_argument('--drop_out', action='store_true', default=False, help='enable dropout (p=0.25)')
 parser.add_argument('--bag_loss', type=str, choices=['svm', 'ce'], default='ce',
                      help='slide-level classification loss function (default: ce)')
-parser.add_argument('--model_type', type=str, choices=['clam_sb', 'clam_mb', 'mil', 'vit', 'vit_large'], default='vit', 
+parser.add_argument('--model_type', type=str, choices=['clam_sb', 'clam_mb', 'mil', 'vit'], default='vit', 
                     help='type of model (default: clam_sb, clam w/ single attention branch)')
 parser.add_argument('--exp_code', type=str, help='experiment code for saving results')
-parser.add_argument('--weighted_sample', action='store_true', default=False, help='enable weighted sampling')
+parser.add_argument('--weighted_sample', action='store_true', default=True, help='enable weighted sampling')
 parser.add_argument('--model_size', type=str, choices=['small', 'big'], default='small', help='size of model, does not affect mil')
-parser.add_argument('--task', type=str, choices=['task_tumor_H3K27M_all2', 'task_tumor_ATRX_all2', 'task_tumor_P53_all2'])
+parser.add_argument('--task', type=str, choices=['task_tumor_H3K27M_all2', 'task_tumor_ATRX_all2', 'task_tumor_P53_all2','task_tumor_H3K27M_fujian', 'task_tumor_ATRX_fujian', 'task_tumor_P53_fujian',
+                                                 'task_tumor_H3K27M_north', 'task_tumor_ATRX_north', 'task_tumor_P53_north','task_tumor_H3K27M_rec', 'task_tumor_ATRX_rec', 'task_tumor_P53_rec'])
 ### CLAM specific options
 parser.add_argument('--no_inst_cluster', action='store_true', default=False,
                      help='disable instance-level clustering')
@@ -180,7 +183,7 @@ print('\nLoad Dataset')
 if args.task == 'task_tumor_H3K27M_all2':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_all2.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -190,7 +193,7 @@ if args.task == 'task_tumor_H3K27M_all2':
 elif args.task == 'task_tumor_ATRX_all2':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_all2.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -200,7 +203,97 @@ elif args.task == 'task_tumor_ATRX_all2':
 elif args.task == 'task_tumor_P53_all2':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_all2.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_H3K27M_fujian':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_fujian2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_ATRX_fujian':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_fujian2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':1, 'pos':0},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_P53_fujian':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_fujian2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_H3K27M_north':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_north2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_ATRX_north':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_north2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':1, 'pos':0},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_P53_north':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_north2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_H3K27M_rec':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_Rec2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':0, 'pos':1},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_ATRX_rec':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_Rec2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
+                            shuffle = False, 
+                            seed = args.seed, 
+                            print_info = True,
+                            label_dict = {'neg':1, 'pos':0},
+                            patient_strat= False,
+                            ignore=[])
+elif args.task == 'task_tumor_P53_rec':
+    args.n_classes=2
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_Rec2.csv',
+                            data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,

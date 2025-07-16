@@ -39,36 +39,14 @@ def main(args):
     all_val_auc = []
     all_test_acc = []
     all_val_acc = []
-    # goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-    if args.task=='task_tumor_H3K27M':
-        # goal = [0.00, 0.00, 0.00, 0.00, 0.00,0.00,0.00,0.00,0.00,0.00]
-        goal = [0.757, 0.753, 0.773, 0.718, 0.785,0.816,0.812,0.816,0.750,0.706]
-        # goal = [0.71, 0.742, 0.722, 0.702, 0.832, 0.757, 0.757, 0.718, 0.702, 0.70] #H3K27M
-    elif args.task=='task_tumor_H3K27M_neg' or args.task=='task_tumor_ATRX_neg' or args.task=='task_tumor_P53_neg':
-        goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-    elif args.task=='task_tumor_ATRX':
-        goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-        # goal = [0.749, 0.749, 0.715, 0.720, 0.715, 0.711, 0.783, 0.773, 0.720, 0.706] #ATRX
-    elif args.task=='task_tumor_P53':
-        # goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-        goal = [0.899, 0.794, 0.843, 0.729, 0.835, 0.790, 0.766, 0.826, 0.769, 0.749] #P53
-    elif args.task=='task_tumor_H3K27M_all':
-        # goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-        goal = [0.753, 0.751, 0.715, 0.725, 0.701, 0.751, 0.722, 0.754, 0.663, 0.763]
-    elif args.task=='task_tumor_ATRX_all':
-        goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-        # goal = [0.708, 0.710, 0.793, 0.702, 0.704,0.759,0.70,0.747,0.798,0.855]
-    elif args.task=='task_tumor_P53_all':
-        goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
-    else:
-         goal = [0.50, 0.50, 0.50, 0.50, 0.50,0.50,0.50,0.50,0.50,0.50]
+    goal = [0.70, 0.70, 0.70, 0.70, 0.70,0.70,0.70,0.70,0.70,0.70]
     folds = np.arange(start, end)
     for i in folds:
         patient=0
         qualify=False
         best_test_auc=goal[i]
 
-        while not qualify and patient<30:
+        while not qualify and patient<10:
             print('loop : ', patient)
             #seed_torch(args.seed)
             train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=False, 
@@ -81,7 +59,7 @@ def main(args):
             results, test_auc, val_auc, test_acc, val_acc  = train(datasets, i, args)
             patient = patient + 1
             
-            if test_auc>best_test_auc or patient==29:
+            if test_auc>best_test_auc or patient==9:
                 print('qualified or out of patient')
                 print('test_auc: ', test_auc)
                 qualify=True
@@ -111,14 +89,18 @@ def main(args):
 parser = argparse.ArgumentParser(description='Configurations for WSI Training')
 parser.add_argument('--data_root_dir', type=str, default=None, 
                     help='data directory')
-parser.add_argument('--max_epochs', type=int, default=80,
+parser.add_argument('--feature_path', type=str, default=None, 
+                    help='feature directory')
+parser.add_argument('--enco_dim', type=int, default=768,
+                    help='encoding dimension (default: enco_dim=768)') 
+parser.add_argument('--max_epochs', type=int, default=50,
                     help='maximum number of epochs to train (default: 200)')
 parser.add_argument('--lr', type=float, default=1e-4,
                     help='learning rate (default: 0.0001)')
 parser.add_argument('--label_frac', type=float, default=1.0,
                     help='fraction of training labels (default: 1.0)')
 parser.add_argument('--reg', type=float, default=1e-3,
-                    help='weight decay (default: 1e-3)')
+                    help='weight decay (default: 1e-3)')                   
 parser.add_argument('--seed', type=int, default=1, 
                     help='random seed for reproducible experiment (default: 1)')
 parser.add_argument('--k', type=int, default=10, help='number of folds (default: 10)')
@@ -135,10 +117,10 @@ parser.add_argument('--opt', type=str, choices = ['adam', 'sgd'], default='adam'
 parser.add_argument('--drop_out', action='store_true', default=False, help='enable dropout (p=0.25)')
 parser.add_argument('--bag_loss', type=str, choices=['svm', 'ce'], default='ce',
                      help='slide-level classification loss function (default: ce)')
-parser.add_argument('--model_type', type=str, choices=['clam_sb', 'clam_mb', 'mil', 'vit', 'vit_large'], default='vit', 
+parser.add_argument('--model_type', type=str, choices=['clam_sb', 'clam_mb', 'mil', 'vit', 'abmil', 'transmil'], default='vit', 
                     help='type of model (default: clam_sb, clam w/ single attention branch)')
 parser.add_argument('--exp_code', type=str, help='experiment code for saving results')
-parser.add_argument('--weighted_sample', action='store_true', default=False, help='enable weighted sampling')
+parser.add_argument('--weighted_sample', action='store_true', default=True, help='enable weighted sampling')
 parser.add_argument('--model_size', type=str, choices=['small', 'big'], default='small', help='size of model, does not affect mil')
 parser.add_argument('--task', type=str, choices=['task_tumor_H3K27M', 'task_tumor_ATRX', 'task_tumor_P53', 'task_tumor_H3K27M_all', 'task_tumor_ATRX_all', 'task_tumor_P53_all', \
     'task_tumor_ATRX_neg', 'task_tumor_H3K27M_neg', 'task_tumor_P53_neg'])
@@ -152,6 +134,7 @@ parser.add_argument('--subtyping', action='store_true', default=False,
 parser.add_argument('--bag_weight', type=float, default=0.7,
                     help='clam: weight coefficient for bag-level loss (default: 0.7)')
 parser.add_argument('--B', type=int, default=8, help='number of positive/negative patches to sample for clam')
+# parser.add_argument("--local_rank", default=os.environ['LOCAL_RANK'], type=int)
 
 args = parser.parse_args()
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -170,8 +153,6 @@ def seed_torch(seed=7):
         torch.cuda.manual_seed_all(seed) # if you are using multi-GPU.
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-
-#seed_torch(args.seed)
 
 encoding_size = 768
 settings = {'num_splits': args.k, 
@@ -202,7 +183,7 @@ print('\nLoad Dataset')
 if args.task == 'task_tumor_H3K27M':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_clean.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -212,7 +193,7 @@ if args.task == 'task_tumor_H3K27M':
 elif args.task == 'task_tumor_ATRX':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_clean.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -222,7 +203,7 @@ elif args.task == 'task_tumor_ATRX':
 elif args.task == 'task_tumor_P53':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_clean.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -232,7 +213,7 @@ elif args.task == 'task_tumor_P53':
 elif args.task == 'task_tumor_H3K27M_all':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_all.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -242,7 +223,7 @@ elif args.task == 'task_tumor_H3K27M_all':
 elif args.task == 'task_tumor_ATRX_all':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_all.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -252,7 +233,7 @@ elif args.task == 'task_tumor_ATRX_all':
 elif args.task == 'task_tumor_P53_all':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_all.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -262,7 +243,7 @@ elif args.task == 'task_tumor_P53_all':
 elif args.task == 'task_tumor_ATRX_neg':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_neg.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -272,7 +253,7 @@ elif args.task == 'task_tumor_ATRX_neg':
 elif args.task == 'task_tumor_H3K27M_neg':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_neg.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -282,7 +263,7 @@ elif args.task == 'task_tumor_H3K27M_neg':
 elif args.task == 'task_tumor_P53_neg':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_neg.csv',
-                            data_dir= os.path.join(args.data_root_dir, 'features_p2_nm'),
+                            data_dir= os.path.join(args.data_root_dir, args.feature_path),
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,

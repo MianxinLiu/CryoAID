@@ -14,9 +14,9 @@ def Find_Optimal_Cutoff(target, predicted):
     return list(roc_t['threshold']) 
 
 
-## AUC at times
+# AUC at times
 gene = 'ATRX'
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_'+gene+'_all/'
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_'+gene+'/'
 
 df = pd.read_csv(datapath+'fold_all.csv',index_col=None)
 # for i in range(1,10):
@@ -79,7 +79,7 @@ print('|test accuracy:', accuracy,
 
 d = {'Y_one':Y_one, 'p_one': p_one, 'Y_hat_cut': Y_hat_cut}
 df = pd.DataFrame(d)
-df.to_csv('/ailab/user/liumianxin/CLAM/statistics/first_auc'+gene+'.csv')
+# df.to_csv('/ailab/user/liumianxin/CLAM/statistics/first_auc'+gene+'.csv')
 
 from sklearn import metrics
 print(len(Y_two))
@@ -107,85 +107,117 @@ print('|test accuracy:', accuracy,
 
 d = {'Y_two':Y_two, 'p_two': p_two, 'Y_hat_cut': Y_hat_cut}
 df = pd.DataFrame(d)
-df.to_csv('/ailab/user/liumianxin/CLAM/statistics/second_auc'+gene+'.csv')
+# df.to_csv('/ailab/user/liumianxin/CLAM/statistics/second_auc'+gene+'.csv')
 
 
 ## Times reduced
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_H3K27M_all/'
-
-df = pd.read_csv(datapath+'fold_0.csv',index_col=None)
-for i in range(1,10):
-    df_tmp = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=None)
-    df = pd.concat((df,df_tmp))
-
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_H3K27M/'
+df = pd.read_csv(datapath+'fold_'+str(0)+'.csv',index_col=None)
+datalist = df['slide_id'].values
+Y = df['Y'].values
+Y_hat = df['Y_hat'].values
+p_1 = df['p_1'].values
+threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
+print(threshold)
+Y_hat_cut = []
+for i in range(len(Y)):
+    if df['p_1'].values[i]>threshold:
+        Y_hat_cut.append(1)
+    else:
+        Y_hat_cut.append(0)
+df.iloc[:,2]=Y_hat_cut
 df1=df
-# print(len(df1))
-# df1=df1.drop_duplicates(subset=['slide_id'])
-# print(len(df1))
-datalist = df['slide_id'].values
-Y = df['Y'].values
-Y_hat = df['Y_hat'].values
-p_1 = df['p_1'].values
 
-
-threshold = Find_Optimal_Cutoff(Y, df1['p_1'].values)
-print(threshold)
-Y_hat_cut = []
-for i in range(len(Y)):
-    if df1['p_1'].values[i]>threshold:
-        Y_hat_cut.append(1)
-    else:
-        Y_hat_cut.append(0)
-df1.iloc[:,2]=Y_hat_cut
-
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_ATRX_all/'
-
-df = pd.read_csv(datapath+'fold_0.csv',index_col=False)
 for i in range(1,10):
-    df_tmp = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=False)
-    df = pd.concat((df,df_tmp))
+    df = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=None)
+    datalist = df['slide_id'].values
+    Y = df['Y'].values
+    Y_hat = df['Y_hat'].values
+    p_1 = df['p_1'].values
+    threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
+    print(threshold)
+    Y_hat_cut = []
+    for i in range(len(Y)):
+        if df['p_1'].values[i]>threshold:
+            Y_hat_cut.append(1)
+        else:
+            Y_hat_cut.append(0)
+    df.iloc[:,2]=Y_hat_cut
 
-df2=df
-df2=df2.drop_duplicates(subset=['slide_id'])
+    df1 = pd.concat((df1,df))
+
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_ATRX/'
+
+df = pd.read_csv(datapath+'fold_'+str(0)+'.csv',index_col=None)
 datalist = df['slide_id'].values
 Y = df['Y'].values
 Y_hat = df['Y_hat'].values
 p_1 = df['p_1'].values
-
-threshold = Find_Optimal_Cutoff(Y, df2['p_1'].values)
+threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
 print(threshold)
 Y_hat_cut = []
 for i in range(len(Y)):
-    if df2['p_1'].values[i]>threshold:
+    if df['p_1'].values[i]>threshold:
         Y_hat_cut.append(1)
     else:
         Y_hat_cut.append(0)
-df2.iloc[:,2]=Y_hat_cut
+df.iloc[:,2]=Y_hat_cut
+df2=df
+
+for i in range(1,10):
+    df = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=None)
+    datalist = df['slide_id'].values
+    Y = df['Y'].values
+    Y_hat = df['Y_hat'].values
+    p_1 = df['p_1'].values
+    threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
+    print(threshold)
+    Y_hat_cut = []
+    for i in range(len(Y)):
+        if df['p_1'].values[i]>threshold:
+            Y_hat_cut.append(1)
+        else:
+            Y_hat_cut.append(0)
+    df.iloc[:,2]=Y_hat_cut
+    df2 = pd.concat((df2,df))
+
 df2.columns = ['slide_id','Y2','Y_hat2','p_02','p_12']
 
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_P53_all/'
-
-df = pd.read_csv(datapath+'fold_0.csv',index_col=False)
-for i in range(1,10):
-    df_tmp = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=False)
-    df = pd.concat((df,df_tmp))
-
-df3=df
-df3=df3.drop_duplicates(subset=['slide_id'])
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_P53/'
+df = pd.read_csv(datapath+'fold_'+str(0)+'.csv',index_col=None)
 datalist = df['slide_id'].values
 Y = df['Y'].values
 Y_hat = df['Y_hat'].values
 p_1 = df['p_1'].values
-
-threshold = Find_Optimal_Cutoff(Y, df3['p_1'].values)
+threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
 print(threshold)
 Y_hat_cut = []
 for i in range(len(Y)):
-    if df3['p_1'].values[i]>threshold:
+    if df['p_1'].values[i]>threshold:
         Y_hat_cut.append(1)
     else:
         Y_hat_cut.append(0)
-df3.iloc[:,2]=Y_hat_cut
+df.iloc[:,2]=Y_hat_cut
+df3=df
+
+for i in range(1,10):
+    df = pd.read_csv(datapath+'fold_'+str(i)+'.csv',index_col=None)
+    datalist = df['slide_id'].values
+    Y = df['Y'].values
+    Y_hat = df['Y_hat'].values
+    p_1 = df['p_1'].values
+    threshold = Find_Optimal_Cutoff(Y, df['p_1'].values)
+    print(threshold)
+    Y_hat_cut = []
+    for i in range(len(Y)):
+        if df['p_1'].values[i]>threshold:
+            Y_hat_cut.append(1)
+        else:
+            Y_hat_cut.append(0)
+    df.iloc[:,2]=Y_hat_cut
+
+    df3 = pd.concat((df3,df))
+
 df3.columns = ['slide_id','Y3','Y_hat3','p_03','p_13']
 
 df1 = df1.merge(df2, on='slide_id')
@@ -248,7 +280,7 @@ df = pd.DataFrame(d)
 df.to_csv('/ailab/user/liumianxin/CLAM/statistics/times2.csv')
 
 ## Times reduced external
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_H3K27M_rec_all/'
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_H3K27M_rec_train/'
 
 df = pd.read_csv(datapath+'fold_0.csv',index_col=None)
 
@@ -272,7 +304,7 @@ for i in range(len(Y)):
         Y_hat_cut.append(0)
 df1.iloc[:,2]=Y_hat_cut
 
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_ATRX_rec_all/'
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_ATRX_rec_train/'
 
 df = pd.read_csv(datapath+'fold_0.csv',index_col=None)
 
@@ -296,7 +328,7 @@ for i in range(len(Y)):
 df2.iloc[:,2]=Y_hat_cut
 df2.columns = ['slide_id','Y2','Y_hat2','p_02','p_12']
 
-datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_task_3_tumor_P53_rec_all/'
+datapath = '/ailab/user/liumianxin/CLAM/eval_results/EVAL_all_P53_rec_train/'
 
 df = pd.read_csv(datapath+'fold_0.csv',index_col=False)
 

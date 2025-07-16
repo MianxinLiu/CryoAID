@@ -1,1 +1,1 @@
-/mnt/data/smart_health_02/liumianxin/Myconda/envs/pathology/bin/python extract_features_fp_PathoDuet_AIFFPE.py --sub_range_l 0 --sub_range_h 84
+/ailab/user/liumianxin/.conda/envs/pathology/bin/python extract_features_fp_FM_AIFFPE.py
