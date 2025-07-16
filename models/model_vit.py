@@ -149,32 +149,3 @@ class mySimpleViT(nn.Module):
         Y_prob = F.softmax(top_instance, dim = 1) 
         return top_instance, Y_prob, Y_hat, torch.mean(torch.log(att), dim=3), 0
 
-
-class mySimpleViT_large(nn.Module):
-    def __init__(self, *, n_classes=2, dim=1024, depth=1, heads=1, mlp_dim=1024, dim_head = 64):
-        super().__init__()
-
-        self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim)
-
-        self.pool = "mean"
-        self.to_latent = nn.Identity()
-
-        self.linear_head = nn.Linear(dim, n_classes)
-
-    def relocate(self):
-        device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.transformer.to(device)
-        self.to_latent.to(device)
-        self.linear_head.to(device)
-
-    def forward(self, x):
-        device = x.device
-        x = torch.unsqueeze(x, dim=0)
-        x, att = self.transformer(x)
-        x = x.mean(dim = 1)
-
-        x = self.to_latent(x)
-        top_instance = self.linear_head(x)
-        Y_hat = torch.topk(top_instance, 1, dim = 1)[1]
-        Y_prob = F.softmax(top_instance, dim = 1) 
-        return top_instance, Y_prob, Y_hat, torch.mean(torch.log(att), dim=3), 0

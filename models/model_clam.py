@@ -77,7 +77,7 @@ args:
 
 
 class CLAM_SB(nn.Module):
-    def __init__(self, gate = True, size_arg = "small", dropout = False, k_sample=8, n_classes=2,
+    def __init__(self, gate = True, size_arg = "small", fea_dim = 768, dropout = False, k_sample=8, n_classes=2,
         instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False):
         super(CLAM_SB, self).__init__()
         self.size_dict = {"small": [768, 512, 256], "big": [768, 512, 384]}
@@ -92,7 +92,7 @@ class CLAM_SB(nn.Module):
         fc.append(attention_net)
         self.attention_net = nn.Sequential(*fc)
         self.classifiers = nn.Linear(size[1], n_classes)
-        self.mapping = nn.Sequential(nn.Linear(size[0], 768), nn.ReLU())
+        self.mapping = nn.Sequential(nn.Linear(fea_dim, 768), nn.ReLU())
         instance_classifiers = [nn.Linear(size[1], 2) for i in range(n_classes)]
         self.instance_classifiers = nn.ModuleList(instance_classifiers)
         self.k_sample = k_sample
@@ -151,7 +151,7 @@ class CLAM_SB(nn.Module):
     def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False):
         device = h.device
         
-        #h = self.mapping(h)
+        h = self.mapping(h)
 
         A, h = self.attention_net(h)  # NxK        
         A = torch.transpose(A, 1, 0)  # KxN
