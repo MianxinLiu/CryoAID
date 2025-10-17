@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 if args.task == 'task_tumor_H3K27M':
     args.n_classes=2
-    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_H3K27M_dummy_clean.csv',
+    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_H3K27M_dummy_pos.csv',
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -34,7 +34,7 @@ if args.task == 'task_tumor_H3K27M':
                             ignore=[])
 elif args.task == 'task_tumor_ATRX':
     args.n_classes=2
-    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_ATRX_dummy_clean.csv',
+    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_ATRX_dummy_pos.csv',
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,
@@ -44,7 +44,7 @@ elif args.task == 'task_tumor_ATRX':
                             ignore=[])
 elif args.task == 'task_tumor_P53':
     args.n_classes=2
-    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_P53_dummy_clean.csv',
+    dataset = Generic_WSI_Classification_Dataset(csv_path = 'dataset_csv/tumor_P53_dummy_pos.csv',
                             shuffle = False, 
                             seed = args.seed, 
                             print_info = True,

@@ -50,8 +50,8 @@ parser.add_argument('--task', type=str, choices=['task_3_tumor_H3K27M_fujian', '
                 'task_3_tumor_H3K27M_resnet', 'task_3_tumor_ATRX_resnet','task_3_tumor_P53_resnet', \
     'task_3_tumor_ATRX_neg', 'task_3_tumor_H3K27M_neg', 'task_3_tumor_P53_neg', \
          'task_3_tumor_H3K27M_all', 'task_3_tumor_ATRX_all','task_3_tumor_P53_all', \
-            'task_3_tumor_H3K27M_rec', 'task_3_tumor_ATRX_rec','task_3_tumor_P53_rec', \
-                'task_3_tumor_H3K27M_rec_all', 'task_3_tumor_ATRX_rec_all','task_3_tumor_P53_rec_all'])
+            'task_3_tumor_H3K27M_con', 'task_3_tumor_ATRX_con','task_3_tumor_P53_con', \
+                'task_3_tumor_H3K27M_con_all', 'task_3_tumor_ATRX_con_all','task_3_tumor_P53_con_all'])
 args = parser.parse_args()
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -109,7 +109,7 @@ elif args.task == 'task_3_tumor_P53_fujian':
                             ignore=[])
 elif args.task == 'task_3_tumor_H3K27M':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
@@ -118,7 +118,7 @@ elif args.task == 'task_3_tumor_H3K27M':
                             ignore=[])
 elif args.task == 'task_3_tumor_ATRX':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
@@ -127,7 +127,7 @@ elif args.task == 'task_3_tumor_ATRX':
                             ignore=[])
 elif args.task == 'task_3_tumor_P53':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
@@ -136,7 +136,7 @@ elif args.task == 'task_3_tumor_P53':
                             ignore=[])
 elif args.task == 'task_3_tumor_H3K27M_nogen':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief_nogen'),
                             shuffle = False, 
                             print_info = True,
@@ -145,7 +145,7 @@ elif args.task == 'task_3_tumor_H3K27M_nogen':
                             ignore=[])
 elif args.task == 'task_3_tumor_ATRX_nogen':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief_nogen'),
                             shuffle = False, 
                             print_info = True,
@@ -154,7 +154,7 @@ elif args.task == 'task_3_tumor_ATRX_nogen':
                             ignore=[])
 elif args.task == 'task_3_tumor_P53_nogen':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief_nogen'),
                             shuffle = False, 
                             print_info = True,
@@ -163,7 +163,7 @@ elif args.task == 'task_3_tumor_P53_nogen':
                             ignore=[])
 elif args.task == 'task_3_tumor_H3K27M_resnet':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_resnet'),
                             shuffle = False, 
                             print_info = True,
@@ -172,7 +172,7 @@ elif args.task == 'task_3_tumor_H3K27M_resnet':
                             ignore=[])
 elif args.task == 'task_3_tumor_ATRX_resnet':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_resnet'),
                             shuffle = False, 
                             print_info = True,
@@ -181,7 +181,7 @@ elif args.task == 'task_3_tumor_ATRX_resnet':
                             ignore=[])
 elif args.task == 'task_3_tumor_P53_resnet':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_clean.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_pos.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_resnet'),
                             shuffle = False, 
                             print_info = True,
@@ -269,54 +269,54 @@ elif args.task == 'task_3_tumor_P53_all':
                             label_dict = {'neg':0, 'pos':1},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_H3K27M_rec':
+elif args.task == 'task_3_tumor_H3K27M_con':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_Rec.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_Con.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
                             label_dict = {'neg':0, 'pos':1},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_ATRX_rec':
+elif args.task == 'task_3_tumor_ATRX_con':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_Rec.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_Con.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
                             label_dict = {'neg':1, 'pos':0},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_P53_rec':
+elif args.task == 'task_3_tumor_P53_con':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_Rec.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_Con.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
                             label_dict = {'neg':0, 'pos':1},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_H3K27M_rec_all':
+elif args.task == 'task_3_tumor_H3K27M_con_all':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_RecAll.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_H3K27M_dummy_ConAll.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
                             label_dict = {'neg':0, 'pos':1},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_ATRX_rec_all':
+elif args.task == 'task_3_tumor_ATRX_con_all':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_RecAll.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_ATRX_dummy_ConAll.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,
                             label_dict = {'neg':1, 'pos':0},
                             patient_strat= False,
                             ignore=[])
-elif args.task == 'task_3_tumor_P53_rec_all':
+elif args.task == 'task_3_tumor_P53_con_all':
     args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_RecAll.csv',
+    dataset = Generic_MIL_Dataset(csv_path = '/ailab/user/liumianxin/CLAM/dataset_csv/tumor_P53_dummy_ConAll.csv',
                             data_dir= os.path.join(args.data_root_dir, 'features_chief'),
                             shuffle = False, 
                             print_info = True,

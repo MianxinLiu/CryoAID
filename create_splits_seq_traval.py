@@ -27,7 +27,7 @@ for j in range(len(datalist)):
     else:
         train_neg+=len(tmp)
 
-datatable2 = pd.read_csv(csvpath+'tumor_'+gene+'_dummy_RecAll.csv')
+datatable2 = pd.read_csv(csvpath+'tumor_'+gene+'_dummy_ConAll.csv')
 test_index = datatable2['slide_id'].values
 
 datalist = datatable2['case_id'].values
@@ -39,9 +39,9 @@ for j in range(len(datalist)):
     else:
         test_neg+=len(tmp)
 
-# datatable = pd.concat((datatable,datatable2))
-# datatable.reset_index(inplace=True, drop=True) 
-# datatable.to_csv(csvpath+'tumor_'+gene+'_dummy_all2.csv')
+datatable = pd.concat((datatable,datatable2))
+datatable.reset_index(inplace=True, drop=True) 
+datatable.to_csv(csvpath+'tumor_'+gene+'_dummy_all2.csv')
 
 
 assert len(np.intersect1d(train_index, test_index)) == 0
